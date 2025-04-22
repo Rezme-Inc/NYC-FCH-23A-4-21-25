@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Scale, AlertCircle, Info, FileCheck, Shield } from 'lucide-react';
+import { Scale, AlertCircle, Info, FileCheck, Shield, ArrowLeft, ArrowRight, FileWarning, ChevronLeft, ChevronRight, Check, X, Clock } from 'lucide-react';
 
 interface Factor {
   id: number;
@@ -17,10 +17,13 @@ interface ManualAssessmentProps {
 
 export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
   const [showWelcome, setShowWelcome] = useState(true);
-  const [hasCertificate, setHasCertificate] = useState<boolean | null>(null);
+  const [hasCertificate, setHasCertificate] = useState<boolean>(false);
   const [activeTooltip, setActiveTooltip] = useState<number | null>(null);
   const [showDoNotHireModal, setShowDoNotHireModal] = useState(false);
   const [doNotHireJustification, setDoNotHireJustification] = useState('');
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [isAssessmentComplete, setIsAssessmentComplete] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [factors, setFactors] = useState<Factor[]>([
     {
       id: 1,
@@ -29,7 +32,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 1",
-      tooltip: "As previously discussed, it is the policy of the State of New York to encourage employers to hire applicants with prior convictions. Article 23-A aims to eliminate bias and illegitimate obstacles people with prior convictions face when seeking work, while at the same time, protecting society's interest in hiring and employing reliable and trustworthy job candidates. Though Article 23-A does not require employers to give preferential treatment to qualified job seekers with prior convictions, it does seek to remove prejudice against such applicants in obtaining jobs. This prejudice is not only widespread, but unfair and counterproductive to you as an employer seeking qualified workers and to the people of New York."
+      tooltip: "New York State encourages hiring qualified applicants with prior convictions. Article 23-A aims to remove unfair barriers while ensuring reliable and trustworthy candidates are considered."
     },
     {
       id: 2,
@@ -38,7 +41,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 2",
-      tooltip: "What does the job entail? What are the responsibilities of the job? Are any special skills required? What is the job like on a day-to-day basis?"
+      tooltip: "Consider the specific tasks, required skills, and daily responsibilities of the position."
     },
     {
       id: 3,
@@ -47,7 +50,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 3",
-      tooltip: "Do the job responsibilities share any qualities with the activities that led to the conviction? For instance, a person convicted of burglary or credit card fraud may not be suitable for a job counting money at the bank. Does the offense make the applicant less suitable for the job? If so, can you articulate what makes this person less qualified?"
+      tooltip: "Evaluate if the conviction affects job performance. For example, a financial crime conviction might be relevant for a banking position."
     },
     {
       id: 4,
@@ -56,7 +59,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 4",
-      tooltip: "Research shows that if a person is conviction free for four to seven years or longer, the likelihood of future arrest is about the same as for someone who has never been convicted of a crime. This time is reduced by the person's involvement in positive activities, including employment, education, and occupational training. Therefore, even for applicants with recent convictions, it is important that the employer consider evidence of rehabilitation and other facts and circumstances that indicate that the applicant does not present a significant risk of re-offending."
+      tooltip: "Research shows that after 4-7 conviction-free years, the likelihood of future arrest matches that of someone without convictions. Consider evidence of rehabilitation."
     },
     {
       id: 5,
@@ -65,7 +68,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 5",
-      tooltip: "It is not uncommon for someone who exercised poor judgment during youth to mature into a productive, hard working, law abiding adult. When evaluating an applicant with a prior conviction, employers should consider the applicant's age at the time the offense was committed."
+      tooltip: "People often mature and change significantly after youthful mistakes. Consider the applicant's age when the offense occurred."
     },
     {
       id: 6,
@@ -74,7 +77,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 6",
-      tooltip: "Not all offenses are the same and how they are defined does not always reflect the circumstances involved in a case. A youth who may have taken another youth's book bag off his body to toss it around can be charged with robbery. (This is a real case example.) Therefore, the circumstances of the case may more accurately reflect the seriousness of the conviction. An employer should always give consideration to the seriousness of the offense or offenses and the circumstances therein."
+      tooltip: "Not all offenses are equally serious. Consider the specific circumstances of the case, as legal definitions may not reflect the actual situation."
     },
     {
       id: 7,
@@ -83,7 +86,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 7",
-      tooltip: "There are a variety of ways that applicants with prior convictions can demonstrate that they have put their lives back on track, and that they will be successful and valuable employees. Applicants may seek to demonstrate their rehabilitation by presenting documents from prior jobs they have held or programs they've been involved with since the time of his/her offense. All evidence of rehabilitation should be considered.\n\nSome examples of items that an applicant might provide to demonstrate his/her rehabilitation are:\n• Education: Transcripts, diplomas, certifications, or letters from teachers.\n• References from past employers or job training programs\n• Evidence of participation in counseling and other workforce development or social service programs\n• Volunteer Programs: Documentation of volunteer activities that indicate responsibility and willingness to contribute to others' well-being."
+      tooltip: "Look for evidence of rehabilitation such as education, employment history, training programs, or volunteer work that demonstrates responsibility and positive change."
     },
     {
       id: 8,
@@ -92,7 +95,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 8",
-      tooltip: "Recording and keeping track of the factors enumerated in Article 23-A and evaluating them fairly will help employers to determine whether a direct relationship exists between the position sought and the prior offense, or whether the employers' legitimate interest in protecting the welfare of people and property would be risked by hiring the applicant. If after careful consideration of all factors the determination is made not to hire the applicant, an employer will typically be safe in denying employment. However, if the evaluation of all factors indicates that an applicant is qualified for the position sought, an employer should be prepared to demonstrate a legitimate reason not related to the prior conviction for not hiring the applicant. The conviction itself is not a legitimate reason."
+      tooltip: "Consider if hiring would create risks to people or property. The conviction itself is not a valid reason to deny employment."
     }
   ]);
 
@@ -100,12 +103,19 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
     setFactors(prev => prev.map(factor => 
       factor.id === id ? { ...factor, value } : factor
     ));
+    checkCompletion();
   };
 
   const handleNotesChange = (id: number, notes: string) => {
     setFactors(prev => prev.map(factor => 
       factor.id === id ? { ...factor, notes } : factor
     ));
+    checkCompletion();
+  };
+
+  const checkCompletion = () => {
+    const isComplete = currentQuestionIndex === factors.length - 1;
+    setIsAssessmentComplete(isComplete);
   };
 
   const getLikertLabel = (value: number) => {
@@ -121,6 +131,23 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
     }
   };
 
+  const getSliderColor = (value: number) => {
+    if (value <= 2) return 'red';
+    if (value <= 4) return 'yellow';
+    return 'green';
+  };
+
+  const getSliderGradient = (value: number) => {
+    const percentage = ((value - 1) / 6) * 100;
+    if (value <= 2) {
+      return `linear-gradient(to right, red 0%, red ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`;
+    } else if (value <= 4) {
+      return `linear-gradient(to right, yellow 0%, yellow ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`;
+    } else {
+      return `linear-gradient(to right, green 0%, green ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`;
+    }
+  };
+
   const handleDoNotHireClick = () => {
     setShowDoNotHireModal(true);
   };
@@ -132,6 +159,21 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         notes: f.id === 8 ? `${f.notes}\n\nDO NOT HIRE Justification: ${doNotHireJustification}` : f.notes
       })), hasCertificate || false);
       setShowDoNotHireModal(false);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < factors.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      checkCompletion();
+    } else {
+      checkCompletion();
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
     }
   };
 
@@ -207,129 +249,218 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
           <br />
           1 = Strongly Unfavorable, 4 = Neutral, 7 = Strongly Favorable
         </p>
+        <div className="mt-2 text-sm text-gray-500">
+          Question {currentQuestionIndex + 1} of {factors.length}
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto pr-2">
         <div className="space-y-8">
-          {factors.map(factor => (
-            <div key={factor.id} className="border-b pb-6">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-medium">{factor.title}</h3>
-                    <button
-                      onClick={() => setActiveTooltip(activeTooltip === factor.id ? null : factor.id)}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      <Info className="w-5 h-5" />
-                    </button>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-1">{factor.description}</p>
-                  <p className="text-xs text-gray-500 mt-1">{factor.article23ASection}</p>
+          <div className="border-b pb-6">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-medium">{factors[currentQuestionIndex].title}</h3>
+                  <button
+                    onClick={() => setActiveTooltip(activeTooltip === factors[currentQuestionIndex].id ? null : factors[currentQuestionIndex].id)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    <Info className="w-5 h-5" />
+                  </button>
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                  <div className="flex items-center gap-2">
+                <p className="text-sm text-gray-600 mt-1">{factors[currentQuestionIndex].description}</p>
+                <p className="text-xs text-gray-500 mt-1">{factors[currentQuestionIndex].article23ASection}</p>
+              </div>
+              <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-col gap-2 w-full md:w-64">
+                  <div className="relative">
                     <input
                       type="range"
                       min="1"
                       max="7"
-                      value={factor.value}
-                      onChange={(e) => handleValueChange(factor.id, parseInt(e.target.value))}
-                      className="w-48"
+                      value={factors[currentQuestionIndex].value}
+                      onChange={(e) => handleValueChange(factors[currentQuestionIndex].id, parseInt(e.target.value))}
+                      className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-200"
+                      style={{
+                        backgroundImage: getSliderGradient(factors[currentQuestionIndex].value),
+                        transition: 'background-image 0.2s ease-in-out'
+                      }}
                     />
-                    <span className="text-sm font-medium w-24">{getLikertLabel(factor.value)}</span>
+                    <div className="absolute -top-2 left-0 w-full flex justify-between">
+                      {[1, 2, 3, 4, 5, 6, 7].map((mark) => (
+                        <div
+                          key={mark}
+                          className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                            factors[currentQuestionIndex].value >= mark
+                              ? getSliderColor(mark) === 'red' ? 'bg-red-500' :
+                                getSliderColor(mark) === 'yellow' ? 'bg-yellow-500' :
+                                'bg-green-500'
+                              : 'bg-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <textarea
-                    value={factor.notes}
-                    onChange={(e) => handleNotesChange(factor.id, e.target.value)}
-                    placeholder="Add notes..."
-                    className="w-full md:w-64 h-20 p-2 border rounded text-sm"
-                  />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                    <span>7</span>
+                  </div>
+                  <div className="text-center">
+                    <span className={`text-sm font-medium transition-colors duration-200 ${
+                      getSliderColor(factors[currentQuestionIndex].value) === 'red' ? 'text-red-500' :
+                      getSliderColor(factors[currentQuestionIndex].value) === 'yellow' ? 'text-yellow-500' :
+                      'text-green-500'
+                    }`}>
+                      {getLikertLabel(factors[currentQuestionIndex].value)}
+                    </span>
+                  </div>
                 </div>
               </div>
-              {activeTooltip === factor.id && (
-                <div className="mt-2 p-3 bg-gray-50 rounded text-sm">
-                  {factor.tooltip}
-                </div>
-              )}
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-6 pt-4 border-t">
-        <div className="mb-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={hasCertificate === true}
-              onChange={(e) => setHasCertificate(e.target.checked)}
-              className="rounded border-gray-300 text-blue-500 focus:ring-blue-500"
-            />
-            <span className="text-sm text-gray-700">Candidate has Certificate of Relief from Disabilities or Good Conduct</span>
-          </label>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-3">
-          <button
-            onClick={() => onComplete(factors, hasCertificate || false)}
-            className="flex-1 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center"
-          >
-            <FileCheck className="w-5 h-5 mr-2" />
-            HIRE
-          </button>
-
-          <button
-            onClick={handleDoNotHireClick}
-            className="flex-1 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center"
-          >
-            <AlertCircle className="w-5 h-5 mr-2" />
-            DO NOT HIRE
-          </button>
-
-          <button
-            onClick={() => onComplete(factors, hasCertificate || false)}
-            className="flex-1 px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center"
-          >
-            <Info className="w-5 h-5 mr-2" />
-            SEND FOR FURTHER REVIEW
-          </button>
-        </div>
-      </div>
-
-      {showDoNotHireModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-            <h2 className="text-xl font-semibold mb-4">Article 23-A Requirement</h2>
-            <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded mb-6">
-              <p className="text-yellow-800">
-                Article 23-A recognizes two instances where an employer may legitimately deny employment to an applicant based on his/her prior conviction: (1) When there is a direct relationship between the prior offense and the specific employment sought, and (2) When the employment would involve an unreasonable risk to property or the safety or welfare of specific individuals or the general public. The conviction itself is not a legitimate reason.
-              </p>
-            </div>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Please describe the relationship between the prior offense and the specific employment sought or the unreasonable risk to property, safety, or welfare:
-              </label>
+            <div className="mt-6 pt-4 border-t">
               <textarea
-                value={doNotHireJustification}
-                onChange={(e) => setDoNotHireJustification(e.target.value)}
-                className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your justification here..."
+                value={factors[currentQuestionIndex].notes}
+                onChange={(e) => handleNotesChange(factors[currentQuestionIndex].id, e.target.value)}
+                placeholder="Add notes..."
+                className="w-full p-2 border rounded text-sm"
               />
             </div>
-            <div className="flex justify-end space-x-4">
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 flex justify-between">
+        <button
+          onClick={handlePrev}
+          disabled={currentQuestionIndex === 0}
+          className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+            currentQuestionIndex === 0
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Previous
+        </button>
+        <button
+          onClick={handleNext}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+        >
+          {currentQuestionIndex === factors.length - 1 ? 'Complete' : 'Next'}
+          {currentQuestionIndex < factors.length - 1 && <ArrowRight className="w-4 h-4" />}
+        </button>
+      </div>
+
+      {activeTooltip === factors[currentQuestionIndex].id && (
+        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h4 className="text-sm font-semibold text-blue-800 mb-2">Additional Information</h4>
+          <p className="text-sm text-blue-700 leading-relaxed">
+            {factors[currentQuestionIndex].tooltip}
+          </p>
+        </div>
+      )}
+
+      {isAssessmentComplete && currentQuestionIndex === factors.length - 1 && (
+        <div className="mt-8 pt-6 border-t">
+          <h3 className="text-lg font-semibold mb-4">Assessment Complete</h3>
+          
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <input
+                type="checkbox"
+                id="certificate"
+                checked={hasCertificate}
+                onChange={(e) => setHasCertificate(e.target.checked)}
+                className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+              />
+              <label htmlFor="certificate" className="text-sm font-medium text-gray-700">
+                Candidate has Certificate of Relief from Disabilities or Good Conduct
+              </label>
+              <button
+                onClick={() => setShowTooltip(!showTooltip)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <Info className="h-4 w-4" />
+              </button>
+            </div>
+            {showTooltip && (
+              <div className="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 className="text-sm font-semibold text-blue-800 mb-2">Certificate Information</h4>
+                <p className="text-sm text-blue-700 leading-relaxed">
+                  A Certificate of Relief from Disabilities or Good Conduct is a legal document that may be issued to individuals with criminal records. It indicates they have taken steps toward rehabilitation and may be eligible for certain employment opportunities that would otherwise be restricted.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <button
+              onClick={() => onComplete(factors, hasCertificate || false)}
+              className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <FileCheck className="w-5 h-5" />
+              Hire
+            </button>
+            <button
+              onClick={handleDoNotHireClick}
+              className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <AlertCircle className="w-5 h-5" />
+              Do Not Hire
+            </button>
+            <button
+              onClick={() => onComplete(factors, hasCertificate || false)}
+              className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <FileWarning className="w-5 h-5" />
+              Further Review
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showDoNotHireModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold mb-4">Justification Required</h3>
+            <div className="mb-4 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+              <p className="text-yellow-700 text-sm">
+                Article 23-A recognizes two instances where an employer may legitimately deny employment to an applicant based on his/her prior conviction:
+              </p>
+              <ol className="list-decimal pl-5 mt-2 text-yellow-700 text-sm space-y-2">
+                <li>When there is a direct relationship between the prior offense and the specific employment sought.</li>
+                <li>When the employment would involve an unreasonable risk to property or the safety or welfare of specific individuals or the general public. The conviction itself is not a legitimate reason.</li>
+              </ol>
+            </div>
+            <textarea
+              value={doNotHireJustification}
+              onChange={(e) => setDoNotHireJustification(e.target.value)}
+              placeholder="Please provide justification for not hiring..."
+              className="w-full p-2 border rounded text-sm mb-4"
+              rows={4}
+            />
+            <div className="flex justify-end gap-4">
               <button
                 onClick={() => setShowDoNotHireModal(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDoNotHireConfirm}
                 disabled={!doNotHireJustification.trim()}
-                className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                  !doNotHireJustification.trim()
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-red-500 text-white hover:bg-red-600'
+                }`}
               >
-                Confirm DO NOT HIRE
+                Confirm
               </button>
             </div>
           </div>
