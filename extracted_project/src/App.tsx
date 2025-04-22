@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CreditCard } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import defaultPdf from "./assets/jacobi_restorative_record.pdf";
@@ -217,149 +217,164 @@ function App() {
           <Route
             path="/assessment"
             element={
-              <div className="container mx-auto px-4 py-8">
-                <div className="flex items-center justify-between mb-6">
-                  <Logo />
-                  <button
-                    onClick={() => window.history.back()}
-                    className="flex items-center text-gray-600 hover:text-gray-900"
-                  >
-                    <ArrowLeft className="w-5 h-5 mr-2" />
-                    Back
-                  </button>
-                </div>
-                {showAssessmentPrompt ? (
-                  <div className="bg-white rounded-lg p-6 md:p-8 max-w-4xl w-full mx-auto my-8 shadow-2xl">
-                    <div className="text-center">
-                      <Logo className="mb-6" />
-                      <h2 className="text-xl md:text-2xl font-bold mb-4">
-                        Begin Individualized Assessment
-                      </h2>
-                      <p className="text-gray-600 mb-8">
-                        You're about to review a candidate, we're going to walk
-                        you through an individualized assessment. Below you will
-                        find a summary of the background report and the job
-                        requisition you are looking to fill at your
-                        organization:
-                      </p>
+              <div className="min-h-screen bg-gray-100 relative">
+                {assessmentReport && !showCelebration && (
+                  <div className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50">
+                    <button
+                      onClick={() => setIsSendModalOpen(true)}
+                      className="flex items-center px-4 py-3 md:px-6 md:py-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl font-semibold shadow-lg transform hover:-translate-y-1 duration-200 group animate-fade-in"
+                    >
+                      <CreditCard className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 group-hover:scale-110 transition-transform" />
+                      <span className="text-base md:text-lg">
+                        SEND ASSESSMENT RESULTS
+                      </span>
+                    </button>
+                  </div>
+                )}
+                <div className="container mx-auto px-4 py-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <Logo />
+                    <button
+                      onClick={() => window.history.back()}
+                      className="flex items-center text-gray-600 hover:text-gray-900"
+                    >
+                      <ArrowLeft className="w-5 h-5 mr-2" />
+                      Back
+                    </button>
+                  </div>
+                  {showAssessmentPrompt ? (
+                    <div className="bg-white rounded-lg p-6 md:p-8 max-w-4xl w-full mx-auto my-8 shadow-2xl">
+                      <div className="text-center">
+                        <Logo className="mb-6" />
+                        <h2 className="text-xl md:text-2xl font-bold mb-4">
+                          Begin Individualized Assessment
+                        </h2>
+                        <p className="text-gray-600 mb-8">
+                          You're about to review a candidate, we're going to
+                          walk you through an individualized assessment. Below
+                          you will find a summary of the background report and
+                          the job requisition you are looking to fill at your
+                          organization:
+                        </p>
 
-                      <div className="space-y-8">
-                        <div className="bg-gray-50 p-6 rounded-lg">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            Background Check Summary
-                          </h3>
-                          <ul className="space-y-3 text-gray-700">
-                            <li>
-                              • Conviction: Possession with Intent to Sell a
-                              Controlled Substance (Class B felony)
-                            </li>
-                            <li>• Date of Conviction: May 12, 2018</li>
-                            <li>• Jurisdiction: Kings County, NY</li>
-                            <li>
-                              • Sentence: Indeterminate 1–9 years; served four
-                              years in state custody (June 2019 – June 2023)
-                            </li>
-                            <li>
-                              • Release & Supervision: Paroled in June 2023;
-                              completed all parole and probation requirements by
-                              May 2025
-                            </li>
-                            <li>
-                              • Parole Violation: One curfew violation recorded
-                              in September 2023; resulted in a formal warning
-                              and no further sanctions
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="bg-gray-50 p-6 rounded-lg">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            Job Requisition: Entry‑Level Sales Associate
-                          </h3>
-                          <div className="mb-4">
-                            <h4 className="font-medium text-gray-900 mb-2">
-                              Position Overview:
-                            </h4>
-                            <p className="text-gray-700">
-                              The Entry‑Level Sales Associate will support sales
-                              initiatives by engaging prospects, presenting
-                              product information, and assisting with day‑to‑day
-                              sales activities. This role includes structured
-                              training, mentorship, and opportunities for
-                              professional growth.
-                            </p>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-900 mb-2">
-                              Key Responsibilities:
-                            </h4>
-                            <ul className="space-y-2 text-gray-700">
+                        <div className="space-y-8">
+                          <div className="bg-gray-50 p-6 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                              Background Check Summary
+                            </h3>
+                            <ul className="space-y-3 text-gray-700">
                               <li>
-                                • Prospect and qualify leads through outreach
-                                and inbound inquiries
+                                • Conviction: Possession with Intent to Sell a
+                                Controlled Substance (Class B felony)
+                              </li>
+                              <li>• Date of Conviction: May 12, 2018</li>
+                              <li>• Jurisdiction: Kings County, NY</li>
+                              <li>
+                                • Sentence: Indeterminate 1–9 years; served four
+                                years in state custody (June 2019 – June 2023)
                               </li>
                               <li>
-                                • Conduct product demonstrations and articulate
-                                value propositions
+                                • Release & Supervision: Paroled in June 2023;
+                                completed all parole and probation requirements
+                                by May 2025
                               </li>
                               <li>
-                                • Maintain and update CRM records with accurate
-                                opportunity and pipeline data
-                              </li>
-                              <li>
-                                • Collaborate with marketing and customer
-                                success teams to ensure seamless customer
-                                experiences
-                              </li>
-                              <li>
-                                • Meet or exceed individual sales targets and
-                                contribute to team goals
+                                • Parole Violation: One curfew violation
+                                recorded in September 2023; resulted in a formal
+                                warning and no further sanctions
                               </li>
                             </ul>
                           </div>
-                        </div>
 
-                        <div className="bg-blue-50 p-6 rounded-lg">
-                          <h3 className="font-semibold text-blue-800 mb-2">
-                            What to Expect:
-                          </h3>
-                          <ul className="list-disc list-inside text-blue-700 space-y-1">
-                            <li>Evaluate eight Article 23-A factors</li>
-                            <li>Consider certificate of relief status</li>
-                            <li>Document your reasoning for each factor</li>
-                            <li>Receive a comprehensive compliance report</li>
-                          </ul>
-                        </div>
+                          <div className="bg-gray-50 p-6 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                              Job Requisition: Entry‑Level Sales Associate
+                            </h3>
+                            <div className="mb-4">
+                              <h4 className="font-medium text-gray-900 mb-2">
+                                Position Overview:
+                              </h4>
+                              <p className="text-gray-700">
+                                The Entry‑Level Sales Associate will support
+                                sales initiatives by engaging prospects,
+                                presenting product information, and assisting
+                                with day‑to‑day sales activities. This role
+                                includes structured training, mentorship, and
+                                opportunities for professional growth.
+                              </p>
+                            </div>
+                            <div>
+                              <h4 className="font-medium text-gray-900 mb-2">
+                                Key Responsibilities:
+                              </h4>
+                              <ul className="space-y-2 text-gray-700">
+                                <li>
+                                  • Prospect and qualify leads through outreach
+                                  and inbound inquiries
+                                </li>
+                                <li>
+                                  • Conduct product demonstrations and
+                                  articulate value propositions
+                                </li>
+                                <li>
+                                  • Maintain and update CRM records with
+                                  accurate opportunity and pipeline data
+                                </li>
+                                <li>
+                                  • Collaborate with marketing and customer
+                                  success teams to ensure seamless customer
+                                  experiences
+                                </li>
+                                <li>
+                                  • Meet or exceed individual sales targets and
+                                  contribute to team goals
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
 
-                        <div className="flex justify-center mt-6">
-                          <button
-                            onClick={startAssessment}
-                            className="px-12 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-                          >
-                            Begin Assessment
-                          </button>
+                          <div className="bg-blue-50 p-6 rounded-lg">
+                            <h3 className="font-semibold text-blue-800 mb-2">
+                              What to Expect:
+                            </h3>
+                            <ul className="list-disc list-inside text-blue-700 space-y-1">
+                              <li>Evaluate eight Article 23-A factors</li>
+                              <li>Consider certificate of relief status</li>
+                              <li>Document your reasoning for each factor</li>
+                              <li>Receive a comprehensive compliance report</li>
+                            </ul>
+                          </div>
+
+                          <div className="flex justify-center mt-6">
+                            <button
+                              onClick={startAssessment}
+                              className="px-12 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                            >
+                              Begin Assessment
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <>
-                    {renderRightPanel}
-                    {isSendModalOpen && (
-                      <SendAssessmentModal
-                        isOpen={isSendModalOpen}
-                        onClose={handleModalClose}
-                        handlePreview={handlePreview}
-                        onReset={handleAccessCandidate}
-                      />
-                    )}
-                    {showCelebration && (
-                      <CompletionCelebration
-                        onContinue={() => setShowCelebration(false)}
-                      />
-                    )}
-                  </>
-                )}
+                  ) : (
+                    <>
+                      {renderRightPanel}
+                      {isSendModalOpen && (
+                        <SendAssessmentModal
+                          isOpen={isSendModalOpen}
+                          onClose={handleModalClose}
+                          handlePreview={handlePreview}
+                          onReset={handleAccessCandidate}
+                        />
+                      )}
+                      {showCelebration && (
+                        <CompletionCelebration
+                          onContinue={() => setShowCelebration(false)}
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             }
           />
