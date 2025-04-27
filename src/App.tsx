@@ -1,4 +1,4 @@
-import { ArrowLeft, CreditCard } from "lucide-react";
+import { ArrowLeft, CreditCard, FileCheck } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import defaultPdf from "./assets/jacobi_restorative_record.pdf";
@@ -31,6 +31,8 @@ function App() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [showAssessmentPrompt, setShowAssessmentPrompt] = useState(true);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [assessorEmail, setAssessorEmail] = useState("");
 
   const handleAccessCandidate = useCallback(() => {
     setCurrentStep(0);
@@ -162,10 +164,16 @@ function App() {
   const startAssessment = useCallback(async () => {
     try {
       setShowAssessmentPrompt(false);
-      setCurrentStep(3);
+      setShowEmailModal(true);
     } catch (error) {
       console.error("Failed to start assessment:", error);
     }
+  }, []);
+
+  const handleEmailSubmit = useCallback((email: string) => {
+    setAssessorEmail(email);
+    setShowEmailModal(false);
+    setCurrentStep(3);
   }, []);
 
   const renderRightPanel = useMemo(
@@ -203,6 +211,38 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
+        {showEmailModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h2 className="text-xl font-bold mb-4">Enter Your Email</h2>
+              <p className="text-gray-600 mb-4">
+                Please enter your email address to continue with the assessment.
+              </p>
+              <input
+                type="email"
+                value={assessorEmail}
+                onChange={(e) => setAssessorEmail(e.target.value)}
+                placeholder="Enter your email address"
+                className="w-full p-2 border border-gray-300 rounded mb-4"
+              />
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setShowEmailModal(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleEmailSubmit(assessorEmail)}
+                  disabled={!assessorEmail}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <Routes>
           <Route
             path="/"
@@ -244,7 +284,7 @@ function App() {
                   </div>
                   {showAssessmentPrompt ? (
                     <div className="bg-white rounded-lg p-6 md:p-8 max-w-4xl w-full mx-auto my-8 shadow-2xl">
-                      <div className="text-center">
+                      <div className="text-left">
                         <Logo className="mb-6" />
                         <h2 className="text-xl md:text-2xl font-bold mb-4">
                           Begin Individualized Assessment
@@ -262,26 +302,44 @@ function App() {
                             <h3 className="text-lg font-semibold text-gray-900 mb-4">
                               Background Check Summary
                             </h3>
-                            <ul className="space-y-3 text-gray-700">
-                              <li>
-                                • Conviction: Possession with Intent to Sell a
-                                Controlled Substance (Class B felony)
+                            <ul className="space-y-3 text-gray-700 list-none pl-0">
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  Conviction: Possession with Intent to Sell a
+                                  Controlled Substance (Class B felony)
+                                </span>
                               </li>
-                              <li>• Date of Conviction: May 12, 2018</li>
-                              <li>• Jurisdiction: Kings County, NY</li>
-                              <li>
-                                • Sentence: Indeterminate 1–9 years; served four
-                                years in state custody (June 2019 – June 2023)
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>Date of Conviction: May 12, 2018</span>
                               </li>
-                              <li>
-                                • Release & Supervision: Paroled in June 2023;
-                                completed all parole and probation requirements
-                                by May 2025
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>Jurisdiction: Kings County, NY</span>
                               </li>
-                              <li>
-                                • Parole Violation: One curfew violation
-                                recorded in September 2023; resulted in a formal
-                                warning and no further sanctions
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  Sentence: Indeterminate 1–9 years; served four
+                                  years in state custody (June 2019 – June 2023)
+                                </span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  Release & Supervision: Paroled in June 2023;
+                                  completed all parole and probation
+                                  requirements by May 2025
+                                </span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  Parole Violation: One curfew violation
+                                  recorded in September 2023; resulted in a
+                                  formal warning and no further sanctions
+                                </span>
                               </li>
                             </ul>
                           </div>
@@ -307,52 +365,92 @@ function App() {
                               <h4 className="font-medium text-gray-900 mb-2">
                                 Key Responsibilities:
                               </h4>
-                              <ul className="space-y-2 text-gray-700">
-                                <li>
-                                  • Prospect and qualify leads through outreach
-                                  and inbound inquiries
+                              <ul className="space-y-2 text-gray-700 list-none pl-0">
+                                <li className="flex items-start">
+                                  <span className="mr-2">•</span>
+                                  <span>
+                                    Prospect and qualify leads through outreach
+                                    and inbound inquiries
+                                  </span>
                                 </li>
-                                <li>
-                                  • Conduct product demonstrations and
-                                  articulate value propositions
+                                <li className="flex items-start">
+                                  <span className="mr-2">•</span>
+                                  <span>
+                                    Conduct product demonstrations and
+                                    articulate value propositions
+                                  </span>
                                 </li>
-                                <li>
-                                  • Maintain and update CRM records with
-                                  accurate opportunity and pipeline data
+                                <li className="flex items-start">
+                                  <span className="mr-2">•</span>
+                                  <span>
+                                    Maintain and update CRM records with
+                                    accurate opportunity and pipeline data
+                                  </span>
                                 </li>
-                                <li>
-                                  • Collaborate with marketing and customer
-                                  success teams to ensure seamless customer
-                                  experiences
+                                <li className="flex items-start">
+                                  <span className="mr-2">•</span>
+                                  <span>
+                                    Collaborate with marketing and customer
+                                    success teams to ensure seamless customer
+                                    experiences
+                                  </span>
                                 </li>
-                                <li>
-                                  • Meet or exceed individual sales targets and
-                                  contribute to team goals
+                                <li className="flex items-start">
+                                  <span className="mr-2">•</span>
+                                  <span>
+                                    Meet or exceed individual sales targets and
+                                    contribute to team goals
+                                  </span>
                                 </li>
                               </ul>
                             </div>
                           </div>
 
-                          <div className="bg-blue-50 p-6 rounded-lg">
-                            <h3 className="font-semibold text-blue-800 mb-2">
-                              What to Expect:
+                          <div className="bg-gray-50 p-6 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                              What to Expect
                             </h3>
-                            <ul className="list-disc list-inside text-blue-700 space-y-1">
-                              <li>Evaluate eight Article 23-A factors</li>
-                              <li>Consider certificate of relief status</li>
-                              <li>Document your reasoning for each factor</li>
-                              <li>Receive a comprehensive compliance report</li>
+                            <ul className="space-y-3 text-gray-700 list-none pl-0">
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  You will be guided through an individualized
+                                  assessment process
+                                </span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  Each factor will be evaluated on a scale of
+                                  1-7
+                                </span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  You will have the opportunity to provide notes
+                                  for each factor
+                                </span>
+                              </li>
+                              <li className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>
+                                  At the end, you will make a final decision:
+                                  Hire, Do Not Hire, or Send for Further Review
+                                </span>
+                              </li>
                             </ul>
                           </div>
+                        </div>
 
-                          <div className="flex justify-center mt-6">
-                            <button
-                              onClick={startAssessment}
-                              className="px-12 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-                            >
-                              Begin Assessment
-                            </button>
-                          </div>
+                        <div className="mt-8 flex justify-center">
+                          <button
+                            onClick={startAssessment}
+                            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center"
+                          >
+                            <FileCheck className="w-5 h-5 mr-2" />
+                            Begin Assessment
+                          </button>
                         </div>
                       </div>
                     </div>
