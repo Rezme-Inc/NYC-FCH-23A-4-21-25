@@ -131,7 +131,7 @@ export const SendAssessmentModal: React.FC<SendAssessmentModalProps> = ({
           <div className="space-y-4">
             <div className="mb-6">
               <p className="text-gray-700 mb-4">
-                Please share the results of your completed individualized fair‑chance hiring assessment with your team of collaborators so everyone can review the findings and coordinate next steps.
+                Please share the results of your completed individualized assessment with your team of collaborators or committee, so everyone can review the findings and coordinate next steps.
               </p>
               <Input
                 label="Recipient Email"

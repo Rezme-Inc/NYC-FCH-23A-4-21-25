@@ -8,10 +8,6 @@ interface CandidateListProps {
 const CandidateList: React.FC<CandidateListProps> = ({ onAccessCandidate }) => {
   const navigate = useNavigate();
 
-  const handleVisitProfile = () => {
-    navigate("/profile");
-  };
-
   const handleAccessCandidate = () => {
     onAccessCandidate();
     navigate("/assessment");
@@ -54,16 +50,10 @@ const CandidateList: React.FC<CandidateListProps> = ({ onAccessCandidate }) => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex space-x-2">
                     <button
-                      onClick={handleVisitProfile}
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                    >
-                      VISIT PROFILE
-                    </button>
-                    <button
                       onClick={handleAccessCandidate}
                       className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
                     >
-                      ACCESS CANDIDATE
+                      ASSESS CANDIDATE
                     </button>
                   </div>
                 </td>
