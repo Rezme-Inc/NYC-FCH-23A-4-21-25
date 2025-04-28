@@ -19,12 +19,56 @@ export function CompletionCelebration({
 }: CompletionCelebrationProps) {
   const [showAlphaModal, setShowAlphaModal] = useState(false);
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleAlphaSubmit = () => {
-    // Here you would typically handle the email submission
-    console.log("Alpha Partner email submitted:", email);
-    setShowAlphaModal(false);
-    setEmail("");
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleAlphaSubmit = async () => {
+    try {
+      setIsSubmitting(true);
+      setError("");
+
+      if (!validateEmail(email)) {
+        setError("Please enter a valid email address");
+        return;
+      }
+
+      // Send email to Google Apps Script
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbwG9Y9-pEQnAi1kz4wsZ_Rx4dZobHjUOvKzWTEgx8Zw2hTh6c8bvIONZjIOzDsV6Nc/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            timestamp: new Date().toISOString(),
+            type: "alpha_partner",
+          }),
+        }
+      );
+
+      console.log("Alpha partner email submission attempt:", {
+        email,
+        response,
+        status: response.status,
+        statusText: response.statusText,
+      });
+
+      setShowAlphaModal(false);
+      setEmail("");
+    } catch (error) {
+      console.error("Failed to submit alpha partner email:", error);
+      setError("Failed to save email. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -127,23 +171,30 @@ export function CompletionCelebration({
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError("");
+              }}
               placeholder="Enter your email address"
-              className="w-full p-2 border border-gray-300 rounded mb-4"
+              className={`w-full p-2 border ${
+                error ? "border-red-500" : "border-gray-300"
+              } rounded mb-2`}
             />
+            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setShowAlphaModal(false)}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
               <button
                 onClick={handleAlphaSubmit}
-                disabled={!email}
+                disabled={!email || isSubmitting}
                 className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
               >
-                Submit
+                {isSubmitting ? "Saving..." : "Submit"}
               </button>
             </div>
           </div>

@@ -33,6 +33,8 @@ function App() {
   const [showAssessmentPrompt, setShowAssessmentPrompt] = useState(true);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [assessorEmail, setAssessorEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAccessCandidate = useCallback(() => {
     setCurrentStep(0);
@@ -49,8 +51,33 @@ function App() {
   const handlePreview = useCallback(
     async (data: { recipientEmail: string }) => {
       try {
-        // Here you would typically handle the preview logic
-        console.log("Sending assessment to:", data.recipientEmail);
+        if (!data.recipientEmail) {
+          throw new Error("Recipient email is required");
+        }
+
+        // Send email to Google Apps Script
+        const response = await fetch(
+          "https://script.google.com/macros/s/AKfycbx0bLy6ijE1JYCUEqfROer50rnA15SRN0p9c-pBmCmr2b-qJ4s4KVTfoWiy8du0nRPs/exec",
+          {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: data.recipientEmail,
+              timestamp: new Date().toISOString(),
+              type: "assessment_result",
+            }),
+          }
+        );
+
+        console.log("Assessment email submission attempt:", {
+          email: data.recipientEmail,
+          response,
+          status: response.status,
+          statusText: response.statusText,
+        });
       } catch (error) {
         console.error("Failed to send assessment:", error);
         throw error; // Re-throw to be handled by the modal
@@ -170,10 +197,56 @@ function App() {
     }
   }, []);
 
-  const handleEmailSubmit = useCallback((email: string) => {
-    setAssessorEmail(email);
-    setShowEmailModal(false);
-    setCurrentStep(3);
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailSubmit = useCallback(async (email: string) => {
+    try {
+      setIsSubmitting(true);
+      setEmailError("");
+
+      if (!validateEmail(email)) {
+        setEmailError("Please enter a valid email address");
+        return;
+      }
+
+      // Send email to Google Apps Script
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbxIrcRsDZW4oYfp60TsDAQQjnojOko0LMrP-zDWVqFpDu5wZPCKzVDCjCSbdEIUAROsWA/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            timestamp: new Date().toISOString(),
+            type: "initial_assessment",
+          }),
+        }
+      );
+
+      console.log("Initial email submission attempt:", {
+        email,
+        response,
+        status: response.status,
+        statusText: response.statusText,
+      });
+
+      // Since we're using no-cors, we can't check response.ok
+      // Instead, we'll assume success if no error is thrown
+      setAssessorEmail(email);
+      setShowEmailModal(false);
+      setCurrentStep(3);
+    } catch (error) {
+      console.error("Failed to save email:", error);
+      setEmailError("Failed to save email. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }, []);
 
   const renderRightPanel = useMemo(
@@ -221,23 +294,32 @@ function App() {
               <input
                 type="email"
                 value={assessorEmail}
-                onChange={(e) => setAssessorEmail(e.target.value)}
+                onChange={(e) => {
+                  setAssessorEmail(e.target.value);
+                  setEmailError("");
+                }}
                 placeholder="Enter your email address"
-                className="w-full p-2 border border-gray-300 rounded mb-4"
+                className={`w-full p-2 border ${
+                  emailError ? "border-red-500" : "border-gray-300"
+                } rounded mb-2`}
               />
+              {emailError && (
+                <p className="text-red-500 text-sm mb-4">{emailError}</p>
+              )}
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={() => setShowEmailModal(false)}
                   className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleEmailSubmit(assessorEmail)}
-                  disabled={!assessorEmail}
+                  disabled={!assessorEmail || isSubmitting}
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                 >
-                  Continue
+                  {isSubmitting ? "Saving..." : "Continue"}
                 </button>
               </div>
             </div>
