@@ -51,8 +51,33 @@ function App() {
   const handlePreview = useCallback(
     async (data: { recipientEmail: string }) => {
       try {
-        // Here you would typically handle the preview logic
-        console.log("Sending assessment to:", data.recipientEmail);
+        if (!data.recipientEmail) {
+          throw new Error("Recipient email is required");
+        }
+
+        // Send email to Google Apps Script
+        const response = await fetch(
+          "https://script.google.com/macros/s/AKfycbx0bLy6ijE1JYCUEqfROer50rnA15SRN0p9c-pBmCmr2b-qJ4s4KVTfoWiy8du0nRPs/exec",
+          {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: data.recipientEmail,
+              timestamp: new Date().toISOString(),
+              type: "assessment_result",
+            }),
+          }
+        );
+
+        console.log("Assessment email submission attempt:", {
+          email: data.recipientEmail,
+          response,
+          status: response.status,
+          statusText: response.statusText,
+        });
       } catch (error) {
         console.error("Failed to send assessment:", error);
         throw error; // Re-throw to be handled by the modal
@@ -196,12 +221,23 @@ function App() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({
+            email,
+            timestamp: new Date().toISOString(),
+            type: "initial_assessment",
+          }),
         }
       );
 
-      console.log("Email submission response:", response);
+      console.log("Initial email submission attempt:", {
+        email,
+        response,
+        status: response.status,
+        statusText: response.statusText,
+      });
 
+      // Since we're using no-cors, we can't check response.ok
+      // Instead, we'll assume success if no error is thrown
       setAssessorEmail(email);
       setShowEmailModal(false);
       setCurrentStep(3);

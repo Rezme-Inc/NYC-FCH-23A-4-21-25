@@ -1,5 +1,5 @@
 import { CheckCircle, Database, Loader, Mail, RefreshCw } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Logo } from "./Logo";
 import { Button } from "./ui-kit/Button";
@@ -88,45 +88,28 @@ export const SendAssessmentModal: React.FC<SendAssessmentModalProps> = ({
   const {
     register,
     handleSubmit,
-    reset,
-    formState: { isValid },
-  } = useForm<FormData>({
-    mode: "onChange",
-  });
+    formState: { errors },
+  } = useForm<FormData>();
 
-  const handleClose = useCallback(() => {
-    setIsSuccess(false);
-    setError(null);
-    onClose();
-  }, [onClose]);
-
-  const onSubmit = useCallback(
-    async (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
+    try {
       setIsSubmitting(true);
       setError(null);
-
-      try {
-        await handlePreview(data);
-        setIsSuccess(true);
-        reset();
-      } catch (error) {
-        setError("Failed to send assessment. Please try again.");
-        console.error("Failed to send assessment:", error);
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [handlePreview, reset]
-  );
-
-  // Reset states when modal is opened
-  React.useEffect(() => {
-    if (isOpen) {
-      setIsSuccess(false);
-      setError(null);
-      reset();
+      await handlePreview(data);
+      setIsSuccess(true);
+    } catch (error) {
+      console.error("Failed to send assessment:", error);
+      setError("Failed to send assessment. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-  }, [isOpen, reset]);
+  };
+
+  const handleClose = () => {
+    if (!isSubmitting) {
+      onClose();
+    }
+  };
 
   return (
     <Modal
@@ -147,7 +130,7 @@ export const SendAssessmentModal: React.FC<SendAssessmentModalProps> = ({
               <Input
                 label="Recipient Email"
                 type="email"
-                {...register("recipientEmail")}
+                {...register("recipientEmail", { required: true })}
                 placeholder="Enter recipient's email address"
                 disabled={isSubmitting}
               />
