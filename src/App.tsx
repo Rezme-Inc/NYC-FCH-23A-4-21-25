@@ -1,4 +1,4 @@
-import { ArrowLeft, CreditCard, FileCheck } from "lucide-react";
+import { CreditCard, FileCheck } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import defaultPdf from "./assets/jacobi_restorative_record.pdf";
@@ -347,15 +347,8 @@ function App() {
                   </div>
                 )}
                 <div className="container mx-auto px-4 py-8">
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center mb-6">
                     <Logo />
-                    <button
-                      onClick={() => window.history.back()}
-                      className="flex items-center text-gray-600 hover:text-gray-900"
-                    >
-                      <ArrowLeft className="w-5 h-5 mr-2" />
-                      Back
-                    </button>
                   </div>
                   {showAssessmentPrompt ? (
                     <div className="bg-white rounded-lg p-6 md:p-8 max-w-4xl w-full mx-auto my-8 shadow-2xl">
