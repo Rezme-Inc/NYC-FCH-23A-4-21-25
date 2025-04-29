@@ -306,14 +306,7 @@ function App() {
               {emailError && (
                 <p className="text-red-500 text-sm mb-4">{emailError}</p>
               )}
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={() => setShowEmailModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </button>
+              <div className="flex justify-end">
                 <button
                   onClick={() => handleEmailSubmit(assessorEmail)}
                   disabled={!assessorEmail || isSubmitting}
