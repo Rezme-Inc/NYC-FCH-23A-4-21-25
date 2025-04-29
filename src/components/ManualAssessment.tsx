@@ -1,5 +1,14 @@
-import React, { useState } from 'react';
-import { Scale, AlertCircle, Info, FileCheck, Shield, ArrowLeft, ArrowRight, FileWarning, ChevronLeft, ChevronRight, Check, X, Clock } from 'lucide-react';
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  FileCheck,
+  FileWarning,
+  Info,
+  Scale,
+  Shield,
+} from "lucide-react";
+import { useState } from "react";
 
 interface Factor {
   id: number;
@@ -20,58 +29,68 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
   const [hasCertificate, setHasCertificate] = useState<boolean>(false);
   const [activeTooltip, setActiveTooltip] = useState<number | null>(null);
   const [showDoNotHireModal, setShowDoNotHireModal] = useState(false);
-  const [doNotHireJustification, setDoNotHireJustification] = useState('');
+  const [doNotHireJustification, setDoNotHireJustification] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isAssessmentComplete, setIsAssessmentComplete] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showDecisionModal, setShowDecisionModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
-  const [colleagueEmail, setColleagueEmail] = useState('');
+  const [colleagueEmail, setColleagueEmail] = useState("");
   const [factors, setFactors] = useState<Factor[]>([
     {
       id: 1,
       title: "Public Policy Consideration",
-      description: "New York State's public policy of encouraging the employment of persons previously convicted of one or more criminal offenses.",
+      description:
+        "New York State's public policy of encouraging the employment of persons previously convicted of one or more criminal offenses.",
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 1",
-      tooltip: "New York State encourages hiring qualified applicants with prior convictions. Article 23-A aims to remove unfair barriers while ensuring reliable and trustworthy candidates are considered."
+      tooltip:
+        "New York State encourages hiring qualified applicants with prior convictions. Article 23-A aims to remove unfair barriers while ensuring reliable and trustworthy candidates are considered.",
     },
     {
       id: 2,
       title: "Job Duties and Responsibilities",
-      description: "The specific duties and responsibilities necessarily related to the license or employment sought.",
+      description:
+        "The specific duties and responsibilities necessarily related to the license or employment sought.",
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 2",
-      tooltip: "Consider the specific tasks, required skills, and daily responsibilities of the position."
+      tooltip:
+        "Consider the specific tasks, required skills, and daily responsibilities of the position.",
     },
     {
       id: 3,
       title: "Conviction Impact on Performance",
-      description: "The bearing, if any, the criminal offense or offenses for which the person was previously convicted will have on their ability to perform duties or responsibilities.",
+      description:
+        "The bearing, if any, the criminal offense or offenses for which the person was previously convicted will have on their ability to perform duties or responsibilities.",
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 3",
-      tooltip: "Evaluate if the conviction affects job performance. For example, a financial crime conviction might be relevant for a banking position."
+      tooltip:
+        "Evaluate if the conviction affects job performance. For example, a financial crime conviction might be relevant for a banking position.",
     },
     {
       id: 4,
       title: "Time Since Offense",
-      description: "The time which has elapsed since the occurrence of the criminal offense or offenses.",
+      description:
+        "The time which has elapsed since the occurrence of the criminal offense or offenses.",
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 4",
-      tooltip: "Research shows that after 4-7 conviction-free years, the likelihood of future arrest matches that of someone without convictions. Consider evidence of rehabilitation."
+      tooltip:
+        "Research shows that after 4-7 conviction-free years, the likelihood of future arrest matches that of someone without convictions. Consider evidence of rehabilitation.",
     },
     {
       id: 5,
       title: "Age at Time of Offense",
-      description: "The age of the person at the time of occurrence of the criminal offense or offenses.",
+      description:
+        "The age of the person at the time of occurrence of the criminal offense or offenses.",
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 5",
-      tooltip: "People often mature and change significantly after youthful mistakes. Consider the applicant's age when the offense occurred."
+      tooltip:
+        "People often mature and change significantly after youthful mistakes. Consider the applicant's age when the offense occurred.",
     },
     {
       id: 6,
@@ -80,39 +99,44 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 6",
-      tooltip: "Not all offenses are equally serious. Consider the specific circumstances of the case, as legal definitions may not reflect the actual situation."
+      tooltip:
+        "Not all offenses are equally serious. Consider the specific circumstances of the case, as legal definitions may not reflect the actual situation.",
     },
     {
       id: 7,
       title: "Rehabilitation Evidence",
-      description: "Any information produced by the person, or produced on their behalf, in regard to rehabilitation and good conduct.",
+      description:
+        "Any information produced by the person, or produced on their behalf, in regard to rehabilitation and good conduct.",
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 7",
-      tooltip: "Look for evidence of rehabilitation such as education, employment history, training programs, or volunteer work that demonstrates responsibility and positive change."
+      tooltip:
+        "Look for evidence of rehabilitation such as education, employment history, training programs, or volunteer work that demonstrates responsibility and positive change.",
     },
     {
       id: 8,
       title: "Public Safety and Property Protection",
-      description: "The legitimate interest in protecting property, and the safety and welfare of specific individuals or the general public.",
+      description:
+        "The legitimate interest in protecting property, and the safety and welfare of specific individuals or the general public.",
       value: 4,
       notes: "",
       article23ASection: "Article 23-A Section 8",
-      tooltip: "Consider if hiring would create risks to people or property. The conviction itself is not a valid reason to deny employment."
-    }
+      tooltip:
+        "Consider if hiring would create risks to people or property. The conviction itself is not a valid reason to deny employment.",
+    },
   ]);
 
   const handleValueChange = (id: number, value: number) => {
-    setFactors(prev => prev.map(factor => 
-      factor.id === id ? { ...factor, value } : factor
-    ));
+    setFactors((prev) =>
+      prev.map((factor) => (factor.id === id ? { ...factor, value } : factor))
+    );
     checkCompletion();
   };
 
   const handleNotesChange = (id: number, notes: string) => {
-    setFactors(prev => prev.map(factor => 
-      factor.id === id ? { ...factor, notes } : factor
-    ));
+    setFactors((prev) =>
+      prev.map((factor) => (factor.id === id ? { ...factor, notes } : factor))
+    );
     checkCompletion();
   };
 
@@ -123,21 +147,29 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
 
   const getLikertLabel = (value: number) => {
     switch (value) {
-      case 1: return "Strongly Unfavorable";
-      case 2: return "Moderately Unfavorable";
-      case 3: return "Slightly Unfavorable";
-      case 4: return "Neutral";
-      case 5: return "Slightly Favorable";
-      case 6: return "Moderately Favorable";
-      case 7: return "Strongly Favorable";
-      default: return "Neutral";
+      case 1:
+        return "Strongly Unfavorable";
+      case 2:
+        return "Moderately Unfavorable";
+      case 3:
+        return "Slightly Unfavorable";
+      case 4:
+        return "Neutral";
+      case 5:
+        return "Slightly Favorable";
+      case 6:
+        return "Moderately Favorable";
+      case 7:
+        return "Strongly Favorable";
+      default:
+        return "Neutral";
     }
   };
 
   const getSliderColor = (value: number) => {
-    if (value <= 2) return 'red';
-    if (value <= 4) return 'yellow';
-    return 'green';
+    if (value <= 2) return "red";
+    if (value <= 4) return "yellow";
+    return "green";
   };
 
   const getSliderGradient = (value: number) => {
@@ -157,28 +189,34 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
 
   const handleDoNotHireConfirm = () => {
     if (doNotHireJustification.trim()) {
-      onComplete(factors.map(f => ({
-        ...f,
-        notes: f.id === 8 ? `${f.notes}\n\nDO NOT HIRE Justification: ${doNotHireJustification}` : f.notes
-      })), hasCertificate || false);
+      onComplete(
+        factors.map((f) => ({
+          ...f,
+          notes:
+            f.id === 8
+              ? `${f.notes}\n\nDO NOT HIRE Justification: ${doNotHireJustification}`
+              : f.notes,
+        })),
+        hasCertificate || false
+      );
       setShowDoNotHireModal(false);
     }
   };
 
   const handleNext = () => {
     if (currentQuestionIndex < factors.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
+      setCurrentQuestionIndex((prev) => prev + 1);
       checkCompletion();
     } else {
       checkCompletion();
-      console.log('Assessment complete, showing decision modal');
+      console.log("Assessment complete, showing decision modal");
       setShowDecisionModal(true);
     }
   };
 
   const handlePrev = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(prev => prev - 1);
+      setCurrentQuestionIndex((prev) => prev - 1);
     }
   };
 
@@ -199,31 +237,54 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         <div className="space-y-6 text-gray-600">
           <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
             <p className="text-blue-700">
-              It is the policy of the State of New York to encourage employers to hire qualified applicants with prior convictions. Article 23-A provides a framework for making intelligent, informed, and fair hiring decisions.
+              It is the policy of the State of New York to encourage employers
+              to hire qualified applicants with prior convictions. Article 23-A
+              provides a framework for making intelligent, informed, and fair
+              hiring decisions.
             </p>
           </div>
-          
+
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800">Key Assessment Principles</h3>
+            <h3 className="text-lg font-semibold text-gray-800">
+              Key Assessment Principles
+            </h3>
             <ul className="list-disc pl-6 space-y-2">
-              <li>Each factor must be evaluated individually and in relation to others</li>
-              <li>No single factor should determine the final hiring decision</li>
-              <li>Qualified candidates must be assessed on a case-by-case basis</li>
-              <li>Consider both job-specific factors and broader policy implications</li>
+              <li>
+                Each factor must be evaluated individually and in relation to
+                others
+              </li>
+              <li>
+                No single factor should determine the final hiring decision
+              </li>
+              <li>
+                Qualified candidates must be assessed on a case-by-case basis
+              </li>
+              <li>
+                Consider both job-specific factors and broader policy
+                implications
+              </li>
             </ul>
           </div>
 
           <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
-            <h4 className="font-semibold text-yellow-800 mb-2">Important Notice</h4>
+            <h4 className="font-semibold text-yellow-800 mb-2">
+              Important Notice
+            </h4>
             <p className="text-yellow-700">
-              If an applicant holds a Certificate of Relief for Disabilities or a Certificate of Good Conduct, these create a presumption of rehabilitation and must be given special consideration in your assessment.
+              If an applicant holds a Certificate of Relief for Disabilities or
+              a Certificate of Good Conduct, these create a presumption of
+              rehabilitation and must be given special consideration in your
+              assessment.
             </p>
           </div>
 
           <div className="bg-gray-50 p-4 rounded">
-            <h4 className="font-semibold text-gray-800 mb-2">Assessment Process</h4>
+            <h4 className="font-semibold text-gray-800 mb-2">
+              Assessment Process
+            </h4>
             <p>
-              You will evaluate eight factors mandated by Article 23-A. For each factor:
+              You will evaluate eight factors mandated by Article 23-A. For each
+              factor:
             </p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
               <li>Rate the factor on a scale of 1-7</li>
@@ -256,8 +317,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         </h2>
         <p className="text-gray-600 mt-2">
           Rate each factor on a scale of 1-7, where:
-          <br />
-          1 = Strongly Unfavorable, 4 = Neutral, 7 = Strongly Favorable
+          <br />1 = Strongly Unfavorable, 4 = Neutral, 7 = Strongly Favorable
         </p>
         <div className="mt-2 text-sm text-gray-500">
           Question {currentQuestionIndex + 1} of {factors.length}
@@ -270,25 +330,40 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-medium">{factors[currentQuestionIndex].title}</h3>
+                  <h3 className="text-lg font-medium">
+                    {factors[currentQuestionIndex].title}
+                  </h3>
                 </div>
-                <p className="text-sm text-gray-600 mt-1">{factors[currentQuestionIndex].description}</p>
-                <p className="text-xs text-gray-500 mt-1">{factors[currentQuestionIndex].article23ASection}</p>
+                <p className="text-sm text-gray-600 mt-1">
+                  {factors[currentQuestionIndex].description}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {factors[currentQuestionIndex].article23ASection}
+                </p>
               </div>
               <div className="flex flex-col items-end gap-2">
                 <div className="flex flex-col gap-2 w-full md:w-64">
-                  <p className="text-sm text-gray-700">Move the slider to select your rating.</p>
+                  <p className="text-sm text-gray-700">
+                    Move the slider to select your rating.
+                  </p>
                   <div className="relative">
                     <input
                       type="range"
                       min="1"
                       max="7"
                       value={factors[currentQuestionIndex].value}
-                      onChange={(e) => handleValueChange(factors[currentQuestionIndex].id, parseInt(e.target.value))}
+                      onChange={(e) =>
+                        handleValueChange(
+                          factors[currentQuestionIndex].id,
+                          parseInt(e.target.value)
+                        )
+                      }
                       className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-200"
                       style={{
-                        backgroundImage: getSliderGradient(factors[currentQuestionIndex].value),
-                        transition: 'background-image 0.2s ease-in-out'
+                        backgroundImage: getSliderGradient(
+                          factors[currentQuestionIndex].value
+                        ),
+                        transition: "background-image 0.2s ease-in-out",
                       }}
                     />
                     <div className="absolute -top-2 left-0 w-full flex justify-between">
@@ -297,10 +372,12 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
                           key={mark}
                           className={`w-2 h-2 rounded-full transition-colors duration-200 ${
                             factors[currentQuestionIndex].value >= mark
-                              ? getSliderColor(mark) === 'red' ? 'bg-red-500' :
-                                getSliderColor(mark) === 'yellow' ? 'bg-yellow-500' :
-                                'bg-green-500'
-                              : 'bg-gray-300'
+                              ? getSliderColor(mark) === "red"
+                                ? "bg-red-500"
+                                : getSliderColor(mark) === "yellow"
+                                ? "bg-yellow-500"
+                                : "bg-green-500"
+                              : "bg-gray-300"
                           }`}
                         />
                       ))}
@@ -316,11 +393,18 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
                     <span>7</span>
                   </div>
                   <div className="text-center">
-                    <span className={`text-sm font-medium transition-colors duration-200 ${
-                      getSliderColor(factors[currentQuestionIndex].value) === 'red' ? 'text-red-500' :
-                      getSliderColor(factors[currentQuestionIndex].value) === 'yellow' ? 'text-yellow-500' :
-                      'text-green-500'
-                    }`}>
+                    <span
+                      className={`text-sm font-medium transition-colors duration-200 ${
+                        getSliderColor(factors[currentQuestionIndex].value) ===
+                        "red"
+                          ? "text-red-500"
+                          : getSliderColor(
+                              factors[currentQuestionIndex].value
+                            ) === "yellow"
+                          ? "text-yellow-500"
+                          : "text-green-500"
+                      }`}
+                    >
                       {getLikertLabel(factors[currentQuestionIndex].value)}
                     </span>
                   </div>
@@ -330,7 +414,12 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
             <div className="mt-6 pt-4 border-t">
               <textarea
                 value={factors[currentQuestionIndex].notes}
-                onChange={(e) => handleNotesChange(factors[currentQuestionIndex].id, e.target.value)}
+                onChange={(e) =>
+                  handleNotesChange(
+                    factors[currentQuestionIndex].id,
+                    e.target.value
+                  )
+                }
                 placeholder="Add notes..."
                 className="w-full p-2 border rounded text-sm"
               />
@@ -345,8 +434,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
           disabled={currentQuestionIndex === 0}
           className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
             currentQuestionIndex === 0
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
           }`}
         >
           <ArrowLeft className="w-4 h-4" />
@@ -356,13 +445,17 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
           onClick={handleNext}
           className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
         >
-          {currentQuestionIndex === factors.length - 1 ? 'Complete' : 'Next'}
-          {currentQuestionIndex < factors.length - 1 && <ArrowRight className="w-4 h-4" />}
+          {currentQuestionIndex === factors.length - 1 ? "Complete" : "Next"}
+          {currentQuestionIndex < factors.length - 1 && (
+            <ArrowRight className="w-4 h-4" />
+          )}
         </button>
       </div>
 
       <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <h4 className="text-sm font-semibold text-blue-800 mb-2">Additional Information</h4>
+        <h4 className="text-sm font-semibold text-blue-800 mb-2">
+          Additional Information
+        </h4>
         <p className="text-sm text-blue-700 leading-relaxed">
           {factors[currentQuestionIndex].tooltip}
         </p>
@@ -371,7 +464,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       {isAssessmentComplete && currentQuestionIndex === factors.length - 1 && (
         <div className="mt-8 pt-6 border-t">
           <h3 className="text-lg font-semibold mb-4">Assessment Complete</h3>
-          
+
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <input
@@ -381,8 +474,12 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
                 onChange={(e) => setHasCertificate(e.target.checked)}
                 className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
               />
-              <label htmlFor="certificate" className="text-sm font-medium text-gray-700">
-                Candidate has Certificate of Relief from Disabilities or Good Conduct
+              <label
+                htmlFor="certificate"
+                className="text-sm font-medium text-gray-700"
+              >
+                Candidate has Certificate of Relief from Disabilities or Good
+                Conduct
               </label>
               <button
                 onClick={() => setShowTooltip(!showTooltip)}
@@ -393,9 +490,15 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
             </div>
             {showTooltip && (
               <div className="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="text-sm font-semibold text-blue-800 mb-2">Certificate Information</h4>
+                <h4 className="text-sm font-semibold text-blue-800 mb-2">
+                  Certificate Information
+                </h4>
                 <p className="text-sm text-blue-700 leading-relaxed">
-                  A Certificate of Relief from Disabilities or Good Conduct is a legal document that may be issued to individuals with criminal records. It indicates they have taken steps toward rehabilitation and may be eligible for certain employment opportunities that would otherwise be restricted.
+                  A Certificate of Relief from Disabilities or Good Conduct is a
+                  legal document that may be issued to individuals with criminal
+                  records. It indicates they have taken steps toward
+                  rehabilitation and may be eligible for certain employment
+                  opportunities that would otherwise be restricted.
                 </p>
               </div>
             )}
@@ -446,14 +549,26 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       {showDoNotHireModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-semibold mb-4">Justification Required</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              Justification Required
+            </h3>
             <div className="mb-4 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
               <p className="text-yellow-700 text-sm">
-                Article 23-A recognizes two instances where an employer may legitimately deny employment to an applicant based on his/her prior conviction:
+                Article 23-A recognizes two instances where an employer may
+                legitimately deny employment to an applicant based on his/her
+                prior conviction:
               </p>
               <ol className="list-decimal pl-5 mt-2 text-yellow-700 text-sm space-y-2">
-                <li>When there is a direct relationship between the prior offense and the specific employment sought.</li>
-                <li>When the employment would involve an unreasonable risk to property or the safety or welfare of specific individuals or the general public. The conviction itself is not a legitimate reason.</li>
+                <li>
+                  When there is a direct relationship between the prior offense
+                  and the specific employment sought.
+                </li>
+                <li>
+                  When the employment would involve an unreasonable risk to
+                  property or the safety or welfare of specific individuals or
+                  the general public. The conviction itself is not a legitimate
+                  reason.
+                </li>
               </ol>
             </div>
             <textarea
@@ -475,8 +590,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
                 disabled={!doNotHireJustification.trim()}
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
                   !doNotHireJustification.trim()
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-red-500 text-white hover:bg-red-600'
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-red-500 text-white hover:bg-red-600"
                 }`}
               >
                 Confirm
@@ -490,7 +605,10 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <h3 className="text-lg font-semibold mb-4">Further Review</h3>
-            <p className="text-sm text-gray-700 mb-4">Enter your colleague's email to request their input on the candidate's employability and character fitness for the role.</p>
+            <p className="text-sm text-gray-700 mb-4">
+              Enter your colleague's email to request their input on the
+              candidate's employability and character fitness for the role.
+            </p>
             <input
               type="email"
               value={colleagueEmail}
@@ -500,16 +618,38 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
             />
             <div className="flex justify-end gap-4">
               <button
-                onClick={() => {
-                  // Optionally send email to colleague here
-                  setShowEmailModal(false);
-                  onComplete(factors, hasCertificate || false);
+                onClick={async () => {
+                  console.log("Attempting to send email:", colleagueEmail);
+                  try {
+                    const response = await fetch(
+                      "https://script.google.com/macros/s/AKfycbw2d1TwVoWevICrggOEaDJcP5ryIz4JcIPqpPKeKLyQLhtF0CrRXF8KKa1m4YB6hy8oiw/exec",
+                      {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ email: colleagueEmail }),
+                      }
+                    );
+
+                    console.log("Response received:", response);
+                    console.log("Response status:", response.status);
+                    console.log("Response status text:", response.statusText);
+
+                    // Since we're using no-cors, we can't check response.ok
+                    // Instead, we'll assume success if no error is thrown
+                    setShowEmailModal(false);
+                    onComplete(factors, hasCertificate || false);
+                  } catch (error) {
+                    console.error("Error saving email to Google Sheet:", error);
+                  }
                 }}
                 disabled={!colleagueEmail.trim()}
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
                   !colleagueEmail.trim()
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
                 }`}
               >
                 Send Request
