@@ -24,6 +24,9 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isAssessmentComplete, setIsAssessmentComplete] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showDecisionModal, setShowDecisionModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [colleagueEmail, setColleagueEmail] = useState('');
   const [factors, setFactors] = useState<Factor[]>([
     {
       id: 1,
@@ -168,6 +171,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       checkCompletion();
     } else {
       checkCompletion();
+      console.log('Assessment complete, showing decision modal');
+      setShowDecisionModal(true);
     }
   };
 
@@ -175,6 +180,11 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
     }
+  };
+
+  const handleFurtherReviewClick = () => {
+    setShowDecisionModal(false);
+    setShowEmailModal(true);
   };
 
   if (showWelcome) {
@@ -391,29 +401,45 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
             )}
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <button
-              onClick={() => onComplete(factors, hasCertificate || false)}
-              className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
-            >
-              <FileCheck className="w-5 h-5" />
-              Hire
-            </button>
-            <button
-              onClick={handleDoNotHireClick}
-              className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
-            >
-              <AlertCircle className="w-5 h-5" />
-              Do Not Hire
-            </button>
-            <button
-              onClick={() => onComplete(factors, hasCertificate || false)}
-              className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2"
-            >
-              <FileWarning className="w-5 h-5" />
-              Further Review
-            </button>
-          </div>
+          {/* Modal for decision options */}
+          {showDecisionModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-lg p-6 max-w-md w-full">
+                <h3 className="text-lg font-semibold mb-4">Select Decision</h3>
+                <div className="flex flex-col md:flex-row gap-4 justify-center">
+                  <button
+                    onClick={() => onComplete(factors, hasCertificate || false)}
+                    className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <FileCheck className="w-5 h-5" />
+                    Hire
+                  </button>
+                  <button
+                    onClick={handleDoNotHireClick}
+                    className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <AlertCircle className="w-5 h-5" />
+                    Do Not Hire
+                  </button>
+                  <button
+                    onClick={handleFurtherReviewClick}
+                    className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <FileWarning className="w-5 h-5" />
+                    Further Review
+                  </button>
+                </div>
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    onClick={() => setShowDecisionModal(false)}
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -454,6 +480,39 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
                 }`}
               >
                 Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showEmailModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold mb-4">Further Review</h3>
+            <p className="text-sm text-gray-700 mb-4">Enter your colleague's email to request their input on the candidate's employability and character fitness for the role.</p>
+            <input
+              type="email"
+              value={colleagueEmail}
+              onChange={(e) => setColleagueEmail(e.target.value)}
+              placeholder="Colleague's email"
+              className="w-full p-2 border rounded text-sm mb-4"
+            />
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  // Optionally send email to colleague here
+                  setShowEmailModal(false);
+                  onComplete(factors, hasCertificate || false);
+                }}
+                disabled={!colleagueEmail.trim()}
+                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                  !colleagueEmail.trim()
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+              >
+                Send Request
               </button>
             </div>
           </div>
