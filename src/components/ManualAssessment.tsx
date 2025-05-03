@@ -34,7 +34,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "New York State's public policy of encouraging the employment of persons previously convicted of one or more criminal offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 1",
+      article23ASection: "ARTICLE 23-A § 753 (a)",
       tooltip: "New York State encourages hiring qualified applicants with prior convictions. Article 23-A aims to remove unfair barriers while ensuring reliable and trustworthy candidates are considered."
     },
     {
@@ -43,7 +43,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The specific duties and responsibilities necessarily related to the license or employment sought.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 2",
+      article23ASection: "ARTICLE 23-A § 753 (b)",
       tooltip: "Consider the specific tasks, required skills, and daily responsibilities of the position."
     },
     {
@@ -52,7 +52,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The bearing, if any, the criminal offense or offenses for which the person was previously convicted will have on their ability to perform duties or responsibilities.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 3",
+      article23ASection: "ARTICLE 23-A § 753 (c)",
       tooltip: "Evaluate if the conviction affects job performance. For example, a financial crime conviction might be relevant for a banking position."
     },
     {
@@ -61,7 +61,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The time which has elapsed since the occurrence of the criminal offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 4",
+      article23ASection: "ARTICLE 23-A § 753 (d)",
       tooltip: "Research shows that after 4-7 conviction-free years, the likelihood of future arrest matches that of someone without convictions. Consider evidence of rehabilitation."
     },
     {
@@ -70,7 +70,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The age of the person at the time of occurrence of the criminal offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 5",
+      article23ASection: "ARTICLE 23-A § 753 (e)",
       tooltip: "People often mature and change significantly after youthful mistakes. Consider the applicant's age when the offense occurred."
     },
     {
@@ -79,7 +79,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The seriousness of the offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 6",
+      article23ASection: "ARTICLE 23-A § 753 (f)",
       tooltip: "Not all offenses are equally serious. Consider the specific circumstances of the case, as legal definitions may not reflect the actual situation."
     },
     {
@@ -88,7 +88,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "Any information produced by the person, or produced on their behalf, in regard to rehabilitation and good conduct.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 7",
+      article23ASection: "ARTICLE 23-A § 753 (g)",
       tooltip: "Look for evidence of rehabilitation such as education, employment history, training programs, or volunteer work that demonstrates responsibility and positive change."
     },
     {
@@ -97,7 +97,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The legitimate interest in protecting property, and the safety and welfare of specific individuals or the general public.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 8",
+      article23ASection: "ARTICLE 23-A § 753 (h)",
       tooltip: "Consider if hiring would create risks to people or property. The conviction itself is not a valid reason to deny employment."
     }
   ]);
