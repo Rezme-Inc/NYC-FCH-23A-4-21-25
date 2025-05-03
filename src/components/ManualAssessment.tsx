@@ -24,9 +24,6 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isAssessmentComplete, setIsAssessmentComplete] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [showDecisionModal, setShowDecisionModal] = useState(false);
-  const [showEmailModal, setShowEmailModal] = useState(false);
-  const [colleagueEmail, setColleagueEmail] = useState('');
   const [factors, setFactors] = useState<Factor[]>([
     {
       id: 1,
@@ -34,7 +31,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "New York State's public policy of encouraging the employment of persons previously convicted of one or more criminal offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 1",
+      article23ASection: "ARTICLE 23-A § 753 (a)",
       tooltip: "New York State encourages hiring qualified applicants with prior convictions. Article 23-A aims to remove unfair barriers while ensuring reliable and trustworthy candidates are considered."
     },
     {
@@ -43,7 +40,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The specific duties and responsibilities necessarily related to the license or employment sought.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 2",
+      article23ASection: "ARTICLE 23-A § 753 (b)",
       tooltip: "Consider the specific tasks, required skills, and daily responsibilities of the position."
     },
     {
@@ -52,7 +49,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The bearing, if any, the criminal offense or offenses for which the person was previously convicted will have on their ability to perform duties or responsibilities.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 3",
+      article23ASection: "ARTICLE 23-A § 753 (c)",
       tooltip: "Evaluate if the conviction affects job performance. For example, a financial crime conviction might be relevant for a banking position."
     },
     {
@@ -61,7 +58,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The time which has elapsed since the occurrence of the criminal offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 4",
+      article23ASection: "ARTICLE 23-A § 753 (d)",
       tooltip: "Research shows that after 4-7 conviction-free years, the likelihood of future arrest matches that of someone without convictions. Consider evidence of rehabilitation."
     },
     {
@@ -70,7 +67,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The age of the person at the time of occurrence of the criminal offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 5",
+      article23ASection: "ARTICLE 23-A § 753 (e)",
       tooltip: "People often mature and change significantly after youthful mistakes. Consider the applicant's age when the offense occurred."
     },
     {
@@ -79,7 +76,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The seriousness of the offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 6",
+      article23ASection: "ARTICLE 23-A § 753 (f)",
       tooltip: "Not all offenses are equally serious. Consider the specific circumstances of the case, as legal definitions may not reflect the actual situation."
     },
     {
@@ -88,7 +85,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "Any information produced by the person, or produced on their behalf, in regard to rehabilitation and good conduct.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 7",
+      article23ASection: "ARTICLE 23-A § 753 (g)",
       tooltip: "Look for evidence of rehabilitation such as education, employment history, training programs, or volunteer work that demonstrates responsibility and positive change."
     },
     {
@@ -97,7 +94,7 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The legitimate interest in protecting property, and the safety and welfare of specific individuals or the general public.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 8",
+      article23ASection: "ARTICLE 23-A § 753 (h)",
       tooltip: "Consider if hiring would create risks to people or property. The conviction itself is not a valid reason to deny employment."
     }
   ]);
@@ -171,8 +168,6 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       checkCompletion();
     } else {
       checkCompletion();
-      console.log('Assessment complete, showing decision modal');
-      setShowDecisionModal(true);
     }
   };
 
@@ -180,11 +175,6 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
     }
-  };
-
-  const handleFurtherReviewClick = () => {
-    setShowDecisionModal(false);
-    setShowEmailModal(true);
   };
 
   if (showWelcome) {
@@ -400,45 +390,29 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
             )}
           </div>
 
-          {/* Modal for decision options */}
-          {showDecisionModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-              <div className="bg-white rounded-lg p-6 max-w-md w-full">
-                <h3 className="text-lg font-semibold mb-4">Select Decision</h3>
-                <div className="flex flex-col md:flex-row gap-4 justify-center">
-                  <button
-                    onClick={() => onComplete(factors, hasCertificate || false)}
-                    className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <FileCheck className="w-5 h-5" />
-                    Hire
-                  </button>
-                  <button
-                    onClick={handleDoNotHireClick}
-                    className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <AlertCircle className="w-5 h-5" />
-                    Do Not Hire
-                  </button>
-                  <button
-                    onClick={handleFurtherReviewClick}
-                    className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <FileWarning className="w-5 h-5" />
-                    Further Review
-                  </button>
-                </div>
-                <div className="flex justify-end gap-4 mt-4">
-                  <button
-                    onClick={() => setShowDecisionModal(false)}
-                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <button
+              onClick={() => onComplete(factors, hasCertificate || false)}
+              className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <FileCheck className="w-5 h-5" />
+              Hire
+            </button>
+            <button
+              onClick={handleDoNotHireClick}
+              className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <AlertCircle className="w-5 h-5" />
+              Do Not Hire
+            </button>
+            <button
+              onClick={() => onComplete(factors, hasCertificate || false)}
+              className="px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <FileWarning className="w-5 h-5" />
+              Further Review
+            </button>
+          </div>
         </div>
       )}
 
@@ -479,39 +453,6 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
                 }`}
               >
                 Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showEmailModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-semibold mb-4">Further Review</h3>
-            <p className="text-sm text-gray-700 mb-4">Enter your colleague's email to request their input on the candidate's employability and character fitness for the role.</p>
-            <input
-              type="email"
-              value={colleagueEmail}
-              onChange={(e) => setColleagueEmail(e.target.value)}
-              placeholder="Colleague's email"
-              className="w-full p-2 border rounded text-sm mb-4"
-            />
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => {
-                  // Optionally send email to colleague here
-                  setShowEmailModal(false);
-                  onComplete(factors, hasCertificate || false);
-                }}
-                disabled={!colleagueEmail.trim()}
-                className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                  !colleagueEmail.trim()
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-500 text-white hover:bg-blue-600'
-                }`}
-              >
-                Send Request
               </button>
             </div>
           </div>
