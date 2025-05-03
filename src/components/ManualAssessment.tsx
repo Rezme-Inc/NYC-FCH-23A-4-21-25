@@ -44,9 +44,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         "New York State's public policy of encouraging the employment of persons previously convicted of one or more criminal offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 1",
-      tooltip:
-        "New York State encourages hiring qualified applicants with prior convictions. Article 23-A aims to remove unfair barriers while ensuring reliable and trustworthy candidates are considered.",
+      article23ASection: "ARTICLE 23-A § 753 (a)",
+      tooltip: "New York State encourages hiring qualified applicants with prior convictions. Article 23-A aims to remove unfair barriers while ensuring reliable and trustworthy candidates are considered."
     },
     {
       id: 2,
@@ -55,9 +54,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         "The specific duties and responsibilities necessarily related to the license or employment sought.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 2",
-      tooltip:
-        "Consider the specific tasks, required skills, and daily responsibilities of the position.",
+      article23ASection: "ARTICLE 23-A § 753 (b)",
+      tooltip: "Consider the specific tasks, required skills, and daily responsibilities of the position."
     },
     {
       id: 3,
@@ -66,9 +64,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         "The bearing, if any, the criminal offense or offenses for which the person was previously convicted will have on their ability to perform duties or responsibilities.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 3",
-      tooltip:
-        "Evaluate if the conviction affects job performance. For example, a financial crime conviction might be relevant for a banking position.",
+      article23ASection: "ARTICLE 23-A § 753 (c)",
+      tooltip: "Evaluate if the conviction affects job performance. For example, a financial crime conviction might be relevant for a banking position."
     },
     {
       id: 4,
@@ -77,9 +74,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         "The time which has elapsed since the occurrence of the criminal offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 4",
-      tooltip:
-        "Research shows that after 4-7 conviction-free years, the likelihood of future arrest matches that of someone without convictions. Consider evidence of rehabilitation.",
+      article23ASection: "ARTICLE 23-A § 753 (d)",
+      tooltip: "Research shows that after 4-7 conviction-free years, the likelihood of future arrest matches that of someone without convictions. Consider evidence of rehabilitation."
     },
     {
       id: 5,
@@ -88,9 +84,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         "The age of the person at the time of occurrence of the criminal offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 5",
-      tooltip:
-        "People often mature and change significantly after youthful mistakes. Consider the applicant's age when the offense occurred.",
+      article23ASection: "ARTICLE 23-A § 753 (e)",
+      tooltip: "People often mature and change significantly after youthful mistakes. Consider the applicant's age when the offense occurred."
     },
     {
       id: 6,
@@ -98,9 +93,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       description: "The seriousness of the offense or offenses.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 6",
-      tooltip:
-        "Not all offenses are equally serious. Consider the specific circumstances of the case, as legal definitions may not reflect the actual situation.",
+      article23ASection: "ARTICLE 23-A § 753 (f)",
+      tooltip: "Not all offenses are equally serious. Consider the specific circumstances of the case, as legal definitions may not reflect the actual situation."
     },
     {
       id: 7,
@@ -109,9 +103,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         "Any information produced by the person, or produced on their behalf, in regard to rehabilitation and good conduct.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 7",
-      tooltip:
-        "Look for evidence of rehabilitation such as education, employment history, training programs, or volunteer work that demonstrates responsibility and positive change.",
+      article23ASection: "ARTICLE 23-A § 753 (g)",
+      tooltip: "Look for evidence of rehabilitation such as education, employment history, training programs, or volunteer work that demonstrates responsibility and positive change."
     },
     {
       id: 8,
@@ -120,9 +113,8 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
         "The legitimate interest in protecting property, and the safety and welfare of specific individuals or the general public.",
       value: 4,
       notes: "",
-      article23ASection: "Article 23-A Section 8",
-      tooltip:
-        "Consider if hiring would create risks to people or property. The conviction itself is not a valid reason to deny employment.",
+      article23ASection: "ARTICLE 23-A § 753 (h)",
+      tooltip: "Consider if hiring would create risks to people or property. The conviction itself is not a valid reason to deny employment."
     },
   ]);
 
