@@ -199,15 +199,25 @@ export function AssessmentReport({ report }: AssessmentReportProps) {
         </h3>
         <div className="space-y-6">
           <div>
-            <h4 className="font-medium mb-3">Legal Framework</h4>
+            <h4 className="font-medium mb-3 flex items-center">
+              Legal Framework
+              <a href="https://www.nysenate.gov/legislation/laws/COR/A23-A" target="_blank" rel="noopener noreferrer" className="ml-2 font-medium text-blue-500 hover:underline">
+                ARTICLE 23-A Licensure and Employment of Persons Previously Convicted of One or More Criminal Offenses
+              </a>
+            </h4>
             <div className="bg-gray-50 p-4 rounded-lg">
               <p className="text-gray-700">{report.legalAnalysis}</p>
               <div className="mt-4 space-y-2">
-                {report.legalReferences.map((ref, index) => (
-                  <div key={index} className="text-sm text-gray-600">
-                    <span className="font-medium">{ref.title}</span> - {ref.section}
-                  </div>
-                ))}
+                <div className="text-sm text-gray-600">
+                  <a href="https://www.nysenate.gov/legislation/laws/COR/752" target="_blank" rel="noopener noreferrer" className="font-medium text-blue-500">
+                    Correction (COR) CHAPTER 43, ARTICLE 23-A § 752
+                  </a>
+                </div>
+                <div className="text-sm text-gray-600">
+                  <a href="https://www.nysenate.gov/legislation/laws/COR/753" target="_blank" rel="noopener noreferrer" className="font-medium text-blue-500">
+                    Correction (COR) CHAPTER 43, ARTICLE 23-A § 753
+                  </a>
+                </div>
               </div>
             </div>
           </div>

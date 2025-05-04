@@ -1,14 +1,5 @@
-import {
-  AlertCircle,
-  ArrowLeft,
-  ArrowRight,
-  FileCheck,
-  FileWarning,
-  Info,
-  Scale,
-  Shield,
-} from "lucide-react";
-import { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { Scale, AlertCircle, Info, FileCheck, Shield, ArrowLeft, ArrowRight, FileWarning, ChevronLeft, ChevronRight, Check, X, Clock } from 'lucide-react';
 
 interface Factor {
   id: number;
@@ -35,8 +26,9 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showDecisionModal, setShowDecisionModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
-  const [colleagueEmail, setColleagueEmail] = useState("");
-  const [factors, setFactors] = useState<Factor[]>([
+  const [colleagueEmail, setColleagueEmail] = useState('');
+  const [showReminder, setShowReminder] = useState(false);
+  const [factors, setFactors] = useState([
     {
       id: 1,
       title: "Public Policy Consideration",
@@ -116,7 +108,11 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
       article23ASection: "ARTICLE 23-A § 753 (h)",
       tooltip: "Consider if hiring would create risks to people or property. The conviction itself is not a valid reason to deny employment."
     },
-  ]);
+  ] as Factor[]);
+
+  useEffect(() => {
+    setShowReminder(false);
+  }, [currentQuestionIndex]);
 
   const handleValueChange = (id: number, value: number) => {
     setFactors((prev) =>
@@ -404,6 +400,45 @@ export function ManualAssessment({ onComplete }: ManualAssessmentProps) {
               </div>
             </div>
             <div className="mt-6 pt-4 border-t">
+              {/* Toggle for Relevant Reminder under first divider */}
+              {[2,3,4,5,6].includes(factors[currentQuestionIndex].id) && (
+                <button
+                  onClick={() => setShowReminder(prev => !prev)}
+                  className="mb-2 px-2 py-1 bg-yellow-50 text-yellow-800 border border-yellow-400 text-xs rounded-full hover:bg-yellow-100 transition"
+                >
+                  Relevant Reminder
+                </button>
+              )}
+              {/* Reminder panel for Hire flow */}
+              {factors[currentQuestionIndex].id === 2 && showReminder && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4 rounded-lg">
+                  <h4 className="font-semibold text-yellow-800 mb-2">Job Requisition: Entry-Level Sales Associate</h4>
+                  <p className="text-sm text-gray-600"><strong>Position Overview:</strong> The Entry-Level Sales Associate will support sales initiatives by engaging prospects, presenting product information, and assisting with day-to-day sales activities. This role includes structured training, mentorship, and opportunities for professional growth.</p>
+                  <p className="text-sm text-gray-600 mt-2"><strong>Key Responsibilities:</strong></p>
+                  <ul className="list-disc list-inside text-sm text-gray-600">
+                    <li>Prospect and qualify leads through outreach and inbound inquiries</li>
+                    <li>Conduct product demonstrations and articulate value propositions</li>
+                    <li>Maintain and update CRM records with accurate opportunity and pipeline data</li>
+                    <li>Collaborate with marketing and customer success teams to ensure seamless customer experiences</li>
+                    <li>Meet or exceed individual sales targets and contribute to team goals</li>
+                  </ul>
+                </div>
+              )}
+              {/* Reminder panel for Background Check Summary on factors 3-6 */}
+              {[3,4,5,6].includes(factors[currentQuestionIndex].id) && showReminder && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 rounded-lg">
+                  <h4 className="font-semibold text-yellow-800 mb-2">Background Check Summary</h4>
+                  <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Conviction: Possession with Intent to Sell a Controlled Substance (Class B felony)</li>
+                    <li>Date of Conviction: May 12, 2018</li>
+                    <li>Age at Conviction: 17 years old</li>
+                    <li>Jurisdiction: Kings County, NY</li>
+                    <li>Sentence: Indeterminate 1–9 years; served four years in state custody (June 2019 – June 2023)</li>
+                    <li>Release & Supervision: Paroled in June 2023; completed all parole and probation requirements by May 2025</li>
+                    <li>Parole Violation: One curfew violation recorded in September 2023; resulted in a formal warning and no further sanctions</li>
+                  </ul>
+                </div>
+              )}
               <textarea
                 value={factors[currentQuestionIndex].notes}
                 onChange={(e) =>
